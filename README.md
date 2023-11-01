@@ -1,5 +1,9 @@
 # Kubernetes
 
+### Docs Link
+
+https://kubernetes.io/
+
 ## Pod
 
 the smallest unit of kubernetes.
@@ -26,7 +30,7 @@ Alow your app to be connect to the internet or other external sources.
 
 ![Alt text](./images/ingress.png)
 
-## config map
+## configmap
 
 external configuration of your app.
 inside it will be environments variables.
@@ -132,3 +136,99 @@ kubectl edit deployment nginx-depl
 this command will open a text editor with yaml file of the deployment that you can edit. after you edit the file save and close it you will see the following message
 
 ![Alt text](i./../images/edit-message.png)
+
+## Debugging pods
+
+```
+kubectl logs <Pod name>
+```
+
+example
+
+```
+kubectl create deployment mongodb-deployment --image=mongo
+
+kubectl get pod
+
+kubectl describe pod mongodb-deployment-684d4cdcdf-9786c
+
+kubectl logs mongodb-deployment-684d4cdcdf-9786c
+```
+
+result
+
+![Alt text](i./../images/create-mongo-d.png)
+![Alt text](i./../images/mongo-status.png)
+
+### Kubectl exec
+
+opening a terminal inside the pod
+
+```
+kubectl exec -it <pod name> bash
+```
+
+example
+
+```
+kubectl exec -it mongodb-deployment-684d4cdcdf-9786c bash
+```
+
+## Delete pods
+
+All the CRUD happening in the deployment level
+
+```
+kubectl get deployment
+
+kubectl delete deployment <deployment name>
+
+kubectl get deployment
+```
+
+## Apply command
+
+Take a file and execute it
+
+```
+kubectl apply -f <file name>
+```
+
+- -f = file
+
+### example
+
+```
+touch nginx-deployment.yaml
+```
+
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.16
+          ports:
+            - containerPort: 80
+
+```
+
+```
+kubectl apply -f nginx-deployment.yaml
+
+kubectl get pod
+```
